@@ -2,6 +2,7 @@ $(document).ready(onReady);
 
 function onReady(){
   $('#submit').on('click', addKoala);
+  $(document).on('click','.delete',relocate);
   getKoalas();
 }
 
@@ -15,9 +16,9 @@ function getKoalas(){
       $('.container').empty();
 
       for (var i = 0; i < res.length; i++) {
-        $('.container').append('<p>Name: ' + res[i].name + ' | Sex: ' + res[i].sex +
+        $('.container').append('<div><p>Name: ' + res[i].name + ' | Sex: ' + res[i].sex +
          ' | Age: ' + res[i].age + ' | Ready For Transfer: ' + res[i].ready_for_transfer +
-          ' | Notes: ' + res[i].notes + '</p>');
+          ' | Notes: ' + res[i].notes + '</p></div><button class="delete" data-koalaid="'+res[i].id+'">Relocate</button>');
       }
     }
   });
@@ -39,6 +40,21 @@ function addKoala(){
     data: objectToSend,
     success: function(res) {
       console.log("adding koalas", res);
+      getKoalas();
+    }
+  });
+}
+
+function relocate(){
+  var myID = $(this).data('koalaid');
+  console.log('remove', myID);
+  //send id to server
+  $.ajax({
+    url: '/remove',
+    type: 'DELETE',
+    data: {id: myID},
+    success: function(res){
+      console.log(res);
       getKoalas();
     }
   });
